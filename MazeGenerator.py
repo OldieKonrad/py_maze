@@ -12,7 +12,6 @@ class Maze():
         self.grid = []
         
         #self.genmaze(self.width, self.height)
-
         self.genmazewilson(self.width, self.height)
 
     def neighbors(self, col, row):
@@ -32,6 +31,7 @@ class Maze():
         return lneighbors
     
     def genmaze(self, width, height):
+        # backtrack / dfs algorithmus
         self.width = width
         self.height = height
         self.graph = defaultdict(lambda : set())        
@@ -66,50 +66,53 @@ class Maze():
         self.graph_to_grid()
 
     def genmazewilson(self, width, height):
+        # wilson algorithmus
         self.width = width
         self.height = height
 
         self.graph = defaultdict(lambda : set())
 
+        # init all unused cells
         unusedCells = {(x, y) for y in range(height) for x in range(width)}
-
-        # start with random aim
-        rcell = random.sample(list(unusedCells), 1)[0]
-        unusedCells.remove(rcell)
-        self.graph(rcell)
 
         # take a random unused cell as a rudimentaty graph
         rcell = random.sample(list(unusedCells), 1)[0]
         unusedCells.remove(rcell)
-        self.graph(rcell)
+        self.graph[rcell]
 
         # find a random path from a random unused cell to a cell in the graph
         while len(unusedCells):
+            # find random path to cell in graph
             rcell = random.sample(list(unusedCells), 1)[0]
             unusedCells.remove(rcell)
-            subgraph = defaultdict(lambda :set())
-            subgraph(rcell)
 
-            # find random path to cell in graph
+            # init stack with the random cell
             stack = [rcell]
             while stack:
                 cn = stack[-1]
                 lneighbors = self.neighbors(*cn)
-                # if we have a cell from graph as neighbor - connect
-                for gn in lneighbors:
-                    if gn in self.graph:
-                        # move subgraph to graph
-                        for k, v in subgraph:
-                            self.graph[k] = v
-                        # connect cn to graph
-                        self.graph[cn].append(gn)
-                        break  # wrong
-
-
-
-        
-
-
+                # choice one of neighbors as next cell in path
+                np = random.choice(lneighbors)
+                # if chosen neighbar allready in path - connect stack cells to path
+                if np in self.graph:
+                    # back edge
+                    self.graph[np].add(cn)
+                    # empty stack
+                    while stack:
+                        cn = stack.pop()
+                        self.graph[cn].add(np)
+                        np = cn
+                    # continue with next random unused cell
+                elif np in set(stack):
+                    # got neighbor in own path
+                    # backtrack stack to this neighbor and return all cells above to unused cells
+                    while stack[-1] != np:
+                        unusedCells.add(stack.pop())
+                elif np in unusedCells:
+                    # prolong path and remove from unused cells
+                    stack.append(np)
+                    unusedCells.remove(np)
+        self.graph_to_grid()                 
 
     def graph_to_grid(self):
         self.grid =  [['X' for _ in range(self.width*2+1)] for __ in range(self.height*2+1)]
