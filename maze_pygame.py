@@ -1,4 +1,5 @@
 import pygame
+from time import perf_counter
 from MazeGenerator import Maze
 
 pygame.init()
@@ -36,7 +37,10 @@ def draw_grid(grid):
 
 
 def main():
+    stime = perf_counter()
     maze = Maze(GRID_WIDTH, GRID_HEIGHT)
+    etime = perf_counter()
+    print(f'maze generation took: {etime-stime:0.4f}')
     running = True
 
     while running:
@@ -47,8 +51,11 @@ def main():
                 running = False
             
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:     # toggle playing
+                if event.key == pygame.K_SPACE:     # toggle to generate new maze
+                    stime = perf_counter()
                     maze = Maze(GRID_WIDTH, GRID_HEIGHT)
+                    etime = perf_counter()
+                    print(f'maze generation took: {etime-stime:0.4f}')
                     
         screen.fill(GREY)
         draw_grid(maze.grid)
