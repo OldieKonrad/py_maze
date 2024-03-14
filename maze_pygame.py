@@ -4,14 +4,16 @@ from MazeGenerator import Maze
 
 pygame.init()
 
+ALGO = 'WILSON'
+
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
 YELLOW = (255, 255, 0)
 
 
-GRID_WIDTH = 50
-GRID_HEIGHT = 50
-TILE_SIZE = 8
+GRID_WIDTH  = 25
+GRID_HEIGHT = 25
+TILE_SIZE = 20
 WIDTH  = ((GRID_WIDTH *2)+1) * TILE_SIZE
 HEIGHT = ((GRID_HEIGHT*2)+1) * TILE_SIZE
 

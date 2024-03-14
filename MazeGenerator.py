@@ -5,14 +5,16 @@ WIDTH  = 3
 HEIGHT = 3
 
 class Maze():
-    def __init__(self, width, height) -> None:
+    def __init__(self, width=WIDTH, height=HEIGHT, algo='WILSON') -> None:
         self.width = width
         self.height = height
         self.graph = defaultdict(lambda : set())
         self.grid = []
+        self.algo = algo
         
         #self.genmaze(self.width, self.height)
-        self.genmazewilson(self.width, self.height)
+        print()
+        self.genmaze(self.width, self.height)
 
     def neighbors(self, col, row):
         noffset = [(-1, 0), (0, -1), (1, 0), (0, 1)]
@@ -29,8 +31,20 @@ class Maze():
             
             lneighbors.append((pnc, pnr))
         return lneighbors
-    
+
     def genmaze(self, width, height):
+        # switch between algorithmen
+        match self.algo:
+            case 'BTRACK':
+                print('Using backtrack algorithm for maze generating')
+                self.genmazebtrack(width, height)
+            case 'WILSON':
+                print('Using wilson algorithm for maze generating')
+                self.genmazewilson(width, height)
+            case _:
+                print('Unknown algorithm')
+    
+    def genmazebtrack(self, width, height):
         # backtrack / dfs algorithmus
         self.width = width
         self.height = height
