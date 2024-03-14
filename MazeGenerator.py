@@ -1,8 +1,9 @@
 import random
+import time
 from collections import defaultdict, deque
 
-WIDTH  = 3
-HEIGHT = 3
+WIDTH  = 25
+HEIGHT = 25
 
 class Maze():
     def __init__(self, width=WIDTH, height=HEIGHT, algo='WILSON') -> None:
@@ -141,10 +142,15 @@ class Maze():
                 
                 per = (pnr+pnrow)//2
                 pec = (pnc+pncol)//2
-                self.grid[per][pec] = ' '      
-            
+                self.grid[per][pec] = ' '        
         return
 
+    def save_grid_to_file(self):
+        filename = f'Maze_{self.algo}_{self.width}x{self.height}_{str(time.time_ns())[:-7]}.txt'
+        print(filename)
+        with open(filename, "w") as mazefile:
+            for row in maze.grid:
+                mazefile.write(''.join(row)+'\n')
 
 if __name__ == '__main__':
 
@@ -154,6 +160,8 @@ if __name__ == '__main__':
         for col in row:
             print(col, end='')
         print() 
+    
+    maze.save_grid_to_file()
     
     # for k, v in graph.items():
     #     print(k, v)
